@@ -1,0 +1,12 @@
+*.iml
+*.hi
+*.o
+.idea/
+elm-stuff/
+.ghci/
+.stack-work/
+.cabal-sandbox
+cabal.sandbox.config
+.DS_Store
+*.swp
+*.keter
