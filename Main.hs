@@ -10,7 +10,7 @@ import Database.PostgreSQL.Simple
 import Database.PostgreSQL.Simple.FromRow
 
 import Data.Monoid ((<>))
-import Data.Text (Text, concat)
+import Data.Text as Text (Text, concat)
 
 import Control.Monad.IO.Class
 
@@ -26,16 +26,17 @@ data Answer = Answer
 instance ToJSON Answer
 
 data User = User
-  { email :: Text
+  { name :: Text
+  , email :: Text
   }
 
 instance FromRow User where
-  fromRow = User <$> field
+  fromRow = User <$> field <*> field
 
 -- APP
 main :: IO ()
 main = do
-  conn <- connectPostgreSQL ("host='127.0.0.1' dbname='haskell' user='test' password='test'")
+  conn <- connectPostgreSQL "host='127.0.0.1' dbname='haskell' user='test' password='test'"
   scotty 3000 $ do
     middleware $ staticPolicy (noDots >-> addBase "static")
     server conn
@@ -44,5 +45,5 @@ server :: Connection -> ScottyM ()
 server conn =
   get "/:word" $ do
     wordParam <- param "word"
-    userEmails <- liftIO (query_ conn "select email from users" :: IO [User])
-    json Answer {err = Nothing, word = wordParam <> Data.Text.concat (email <$> userEmails)}
+    users <- liftIO (query_ conn "select name, email from users" :: IO [User])
+    json Answer {err = Nothing, word = wordParam <> " emails: " <> Text.concat (email <$> users) <> " names: " <> Text.concat (name <$> users)}
