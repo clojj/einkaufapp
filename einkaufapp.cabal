@@ -7,7 +7,7 @@ executable          einkaufapp
     hs-source-dirs: .
     main-is:        Main.hs
     ghc-options:    -Wall -threaded -O2 -rtsopts -with-rtsopts=-N
-    build-depends:  base   >= 4      && < 5
+    build-depends:  base >= 4 && < 5
                   , scotty
                   , text
                   , aeson
